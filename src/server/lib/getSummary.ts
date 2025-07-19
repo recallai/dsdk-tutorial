@@ -1,6 +1,8 @@
+import z from "zod";
 import { env } from "../config/env";
 
-export const getSummary = async (transcript: Record<string, string>[]) => {
+export const getSummary = async (args: { transcript: string }) => {
+    const { transcript } = z.object({ transcript: z.string(), }).parse(args);
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -16,7 +18,7 @@ export const getSummary = async (transcript: Record<string, string>[]) => {
                 },
                 {
                     role: "user",
-                    content: `Please provide a summary of the following transcript:\n\n${transcript.map(t => `${t.speakerName}: ${t.text}`).join('\n')}`
+                    content: `Please provide a summary of the following transcript:\n\n${transcript}`
                 }
             ]
         })
