@@ -31,7 +31,7 @@ contextBridge.exposeInMainWorld('electron', {
         send: (channel: 'message-from-renderer', data: any) => {
             const validChannels = ['message-from-renderer'];
             if (validChannels.includes(channel)) {
-                console.log(`renderer --> main: ${channel}, ${JSON.stringify(data)}`);
+                console.log(`ℹ️ renderer --> main: ${channel}, ${JSON.stringify(data)}`);
                 ipcRenderer.send(channel, data);
             } else {
                 console.error(`Invalid channel: ${channel}`);
