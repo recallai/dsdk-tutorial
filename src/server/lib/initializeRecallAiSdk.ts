@@ -6,6 +6,8 @@ import Store from 'electron-store';
 import { sendStateToRenderer } from '../../main';
 import { createRecallAiDesktopSdkUpload } from './recall/createRecallAiDesktopSdkUpload';
 import { retrieveRecallAiRecording } from './recall/retrieveRecallAiRecording';
+import { getSummary } from './getSummary';
+import { parseTranscript } from './parseTranscript';
 
 /**
  * ==================================
@@ -200,9 +202,14 @@ export function initializeRecallAiSdk() {
 
                 // Query data associated with this recording
                 const recording = await retrieveRecallAiRecording(meeting.sdkUploadId);
+                const transcript = await parseTranscript(recording.media_shortcuts.transcript.data.download_url);
+                const summary = await getSummary(transcript.map((t) => t.text).join(' '));
+
                 if (recording) {
                     newState.recording = recording;
                     newState.videoUrl = recording.media_shortcuts.video_mixed.data.download_url;
+                    newState.transcript = transcript;
+                    newState.summary = summary;
                 }
                 updateState(newState);
             }
