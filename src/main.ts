@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
-import { initializeRecallAiSdk } from './server/lib/initializeRecallAiSdk';
+import { getState, initializeRecallAiSdk } from './server/lib/initializeRecallAiSdk';
+import { State } from './server/lib/state';
+import z from 'zod';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -60,7 +62,25 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-ipcMain.handle('request-from-renderer', async () => {
-  return 'response from main';
+ipcMain.handle('request-from-renderer', async (_, data) => {
+  const { command } = z.object({ command: z.string() }).parse(data);
+  switch (command) {
+    case 'retrieve_state': {
+      return getState();
+    }
+    default: {
+      return 'invalid command';
+    }
+  }
+
+  throw new Error(`Invalid command: ${command}`);
 });
+
+export const sendStateToRenderer = (state: State) => {
+  if (!mainWindow) {
+    throw new Error('Main window not found');
+  }
+  console.log(`ℹ️ renderer <-- main: ${JSON.stringify(state)}`);
+  mainWindow.webContents.send('message-from-main', state);
+}
 

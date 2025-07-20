@@ -4,7 +4,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 export interface IpcRenderer {
-    invoke: (channel: 'request-from-renderer') => Promise<any>;
+    invoke: (channel: 'request-from-renderer', ...args: any[]) => Promise<any>;
     send: (channel: 'message-from-renderer', data: any) => void;
     on: (channel: 'message-from-main', func: (...args: any[]) => void) => (() => void) | undefined;
 }
