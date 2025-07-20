@@ -59,10 +59,6 @@ export function initializeRecallAiSdk() {
     ipcMain.on('message-from-renderer', async (_, arg) => {
         console.log(`ℹ️ renderer --> main: ${arg.command}`);
         switch (arg.command) {
-            case 'retrieve_state': {
-                // State will be sent at the end of the function
-                break;
-            }
             case 'reset_state': {
                 updateState({
                     ...InitialStateValue,
