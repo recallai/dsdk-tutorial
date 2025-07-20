@@ -5,6 +5,7 @@ import { InitialStateValue, State, StateSchema } from './state';
 import Store from 'electron-store';
 import { sendStateToRenderer } from '../../main';
 import { createRecallAiDesktopSdkUpload } from './recall/createRecallAiDesktopSdkUpload';
+import { retrieveRecallAiRecording } from './recall/retrieveRecallAiRecording';
 
 /**
  * ==================================
@@ -190,10 +191,24 @@ export function initializeRecallAiSdk() {
     // The status of the recording upload progress
     RecallAiSdk.addEventListener('upload-progress', async (evt) => {
         if (evt.progress === 100) {
-            console.log(`✅ Completed uploading recording to Recall.ai`, evt);
+            const meeting = getState().meeting;
 
+            if (meeting?.window?.id === evt.window.id) {
+                console.log(`✅ Completed uploading recording to Recall.ai`, evt);
+
+                const newState: Partial<State> = { meeting: { ...meeting, uploadPercentage: evt.progress } };
+
+                // Query data associated with this recording
+                const recording = await retrieveRecallAiRecording(meeting.sdkUploadId);
+                if (recording) {
+                    newState.recording = recording;
+                    newState.videoUrl = recording.media_shortcuts.video_mixed.data.download_url;
+                }
+                updateState(newState);
+            }
             sendStateToRenderer(getState());
         }
+
     });
 
 } 
