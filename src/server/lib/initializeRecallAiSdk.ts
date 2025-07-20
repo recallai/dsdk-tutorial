@@ -4,6 +4,7 @@ import { ipcMain } from 'electron';
 import { InitialStateValue, State, StateSchema } from './state';
 import Store from 'electron-store';
 import { sendStateToRenderer } from '../../main';
+import { createRecallAiDesktopSdkUpload } from './recall/createRecallAiDesktopSdkUpload';
 
 /**
  * ==================================
@@ -71,6 +72,40 @@ export function initializeRecallAiSdk() {
                 // State will be sent at the end of the function
                 break;
             }
+            case 'start_recording': {
+                if (!getState().meeting) {
+                    throw new Error('There is no meeting in progress')
+                }
+
+                const data = await createRecallAiDesktopSdkUpload();
+                RecallAiSdk.startRecording({
+                    windowId: getState().meeting.window.id,
+                    uploadToken: data.upload_token
+                });
+                updateState({
+                    isRecording: true,
+                    meeting: {
+                        ...getState().meeting,
+                        uploadToken: data.upload_token,
+                        sdkUploadId: data.id
+                    }
+                });
+                console.log(`Started recording. upload token: ${data.upload_token}`);
+                break;
+            }
+            case 'stop_recording': {
+                if (!getState().isRecording) {
+                    throw new Error('There is no recording in progress')
+                }
+                const windowId = getState().meeting.window.id;
+                if (!windowId) {
+                    throw new Error('There is no window id in the state')
+                }
+                RecallAiSdk.stopRecording({ windowId });
+                updateState({ isRecording: false });
+                console.log('Stopped recording');
+                break;
+            }
             default: {
                 console.log(`⚠️ Unsupported command: ${arg.command}`);
                 break;
@@ -92,4 +127,64 @@ export function initializeRecallAiSdk() {
         let { type, message } = evt;
         console.error("ERROR: ", type, message);
     });
+
+    /** ===== Permissions events ===== */
+
+    // When permissions are granted, set the permissions state
+    RecallAiSdk.addEventListener('permissions-granted', async (evt) => {
+        console.log("Permissions granted, ready to record", evt);
+        updateState({ permissions_granted: true });
+        sendStateToRenderer(getState());
+    });
+
+    /** == Meeting detection events == */
+
+    // When a meeting is detected, set the meeting state
+    RecallAiSdk.addEventListener('meeting-detected', async (evt) => {
+        setLatestMeeting(evt);
+        if (!getState().meeting) {
+            console.log("Meeting detected, setting meeting state", evt);
+            updateState({ meeting: evt });
+        } else {
+            console.log("Meeting already detected, skipping", evt);
+        }
+        sendStateToRenderer(getState());
+    });
+
+    // The meeting client has closed (i.e. the user has left the meeting or the zoom client has been closed)
+    RecallAiSdk.addEventListener('meeting-closed', async (evt) => {
+        console.log("Meeting closed, clearing meeting state", evt);
+        updateState({ meeting: null, isRecording: false });
+        sendStateToRenderer(getState());
+    });
+
+    /** ====== Recording events ====== */
+
+    // Manages the recording state as the sdk recording state changes
+    RecallAiSdk.addEventListener('sdk-state-change', (event) => {
+        console.log("recording state changed", event);
+        try {
+            switch (event.sdk.state.code) {
+                case 'recording': {
+                    updateState({ isRecording: true });
+                    break;
+                }
+                case 'idle': {
+                    updateState({ isRecording: false });
+                    break;
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+        sendStateToRenderer(getState());
+    });
+
+    // Upload the recording to Recall.ai when the recording has ended
+    RecallAiSdk.addEventListener('recording-ended', async (evt) => {
+        console.log("Recording ended, uploading recording", evt);
+        RecallAiSdk.uploadRecording({ windowId: evt.window.id });
+        sendStateToRenderer(getState());
+    });
+
 } 

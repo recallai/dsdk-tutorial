@@ -1,3 +1,4 @@
+import { RecordingButton } from "../components/modules/RecordingButton";
 import { ResetStateButton } from "../components/modules/ResetStateButton";
 import { SdkState } from "../components/modules/SdkState";
 
@@ -9,6 +10,7 @@ export const HomePage: React.FC = () => {
       <SdkState />
 
       <div className="flex flex-row gap-5">
+        <RecordingButton />
         <ResetStateButton />
       </div>
     </div>
