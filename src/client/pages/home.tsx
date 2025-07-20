@@ -1,6 +1,9 @@
 import { RecordingButton } from "../components/modules/RecordingButton";
 import { ResetStateButton } from "../components/modules/ResetStateButton";
 import { SdkState } from "../components/modules/SdkState";
+import { VideoPlayer } from "../components/modules/VideoPlayer";
+import { Transcript } from "../components/modules/Transcript";
+import { AiSummary } from "../components/modules/AiSummary";
 
 export const HomePage: React.FC = () => {
   return (
@@ -13,6 +16,10 @@ export const HomePage: React.FC = () => {
         <RecordingButton />
         <ResetStateButton />
       </div>
+
+      <VideoPlayer />
+      <Transcript />
+      <AiSummary />
     </div>
   );
 };
