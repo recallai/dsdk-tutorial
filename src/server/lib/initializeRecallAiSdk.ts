@@ -71,6 +71,8 @@ export function initializeRecallAiSdk() {
                     // Don't want to reset permissions if they've already been granted
                     permissions_granted: getState().permissions_granted
                 });
+
+                // State will be sent at the end of the function
                 break;
             }
             default: {

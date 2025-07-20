@@ -18,18 +18,14 @@ export const SdkStateProvider = ({ children }: { children: ReactNode }) => {
     window.electron.ipcRenderer
       .invoke("request-from-renderer", { command: "retrieve_state" })
       .then((initialState: State) => {
-        console.log(
-          `ℹ️ renderer <-- main (initial state): ${JSON.stringify(
-            initialState
-          )}`
-        );
+        console.log(`ℹ️ renderer <-- main: ${JSON.stringify(initialState)}`);
         setSdkState(initialState);
       });
 
     const cleanup = window.electron.ipcRenderer.on(
       "message-from-main",
       (state: State) => {
-        console.log(`renderer <-- main (update): ${JSON.stringify(state)}`);
+        console.log(`renderer <-- main: ${JSON.stringify(state)}`);
         setSdkState(state);
       }
     );

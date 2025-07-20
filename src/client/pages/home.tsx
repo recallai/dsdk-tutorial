@@ -1,3 +1,4 @@
+import { ResetStateButton } from "../components/modules/ResetStateButton";
 import { SdkState } from "../components/modules/SdkState";
 
 export const HomePage: React.FC = () => {
@@ -6,6 +7,10 @@ export const HomePage: React.FC = () => {
       <h1 className="text-2xl font-bold">Recording App</h1>
 
       <SdkState />
+
+      <div className="flex flex-row gap-5">
+        <ResetStateButton />
+      </div>
     </div>
   );
 };
