@@ -187,4 +187,13 @@ export function initializeRecallAiSdk() {
         sendStateToRenderer(getState());
     });
 
+    // The status of the recording upload progress
+    RecallAiSdk.addEventListener('upload-progress', async (evt) => {
+        if (evt.progress === 100) {
+            console.log(`✅ Completed uploading recording to Recall.ai`, evt);
+
+            sendStateToRenderer(getState());
+        }
+    });
+
 } 
