@@ -62,20 +62,24 @@ export function initializeRecallAiSdk() {
 
     ipcMain.on('message-from-renderer', async (_, arg) => {
         console.log(`ℹ️ renderer --> main: ${arg.command}`);
+
+        const resetState = () => updateState({
+            ...InitialStateValue,
+            // Overwrite the existing meeting window with the latest one
+            meeting: getLatestMeeting(),
+            // Don't want to reset permissions if they've already been granted
+            permissions_granted: getState().permissions_granted
+        });
+
+
         switch (arg.command) {
             case 'reset_state': {
-                updateState({
-                    ...InitialStateValue,
-                    // Overwrite the existing meeting window with the latest one
-                    meeting: getLatestMeeting(),
-                    // Don't want to reset permissions if they've already been granted
-                    permissions_granted: getState().permissions_granted
-                });
-
-                // State will be sent at the end of the function
+                resetState();
                 break;
             }
             case 'start_recording': {
+                resetState();
+
                 if (!getState().meeting) {
                     throw new Error('There is no meeting in progress')
                 }
