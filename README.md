@@ -44,11 +44,11 @@ Here is a guide to the key files related to the Recall.ai integration:
 
 #### Server (Main Process)
 
-- `src/main.ts`: The entry point for the Electron main process. It creates the application window and sets up IPC (Inter-Process Communication) handlers to listen for events from the UI.
+- `src/main.ts`: The entry point for the Electron main process
 - `src/server/lib/initializeRecallAiSdk.ts`: This is where all of the Recall.ai Desktop SDK is configured and initialized. It contains the core logic for the desktop SDK **and is the entirety of what the desktop sdk tutorial covers**
-- `src/server/lib/recall/createRecallAiDesktopSdkUpload.ts`: Creates a reference for a new recording and returns an `upload_token` that the Desktop SDK uses to stream data to Recall.ai's servers.
-- `src/server/lib/recall/retrieveRecallAiRecording.ts`: A helper function for retrieving the final recording data from the Recall.ai API after a recording is complete.
-- `src/server/lib/parseTranscript.ts`: Fetches the raw transcript data from the download URL and formats it by combining words into utterances for each speaker.
+- `src/server/lib/recall/createRecallAiDesktopSdkUpload.ts`: Calls the Recall.ai api to get an sdk upload token. This token is used in the desktop sdk to attribute the current recording session to a Recall.ai recording
+- `src/server/lib/recall/retrieveRecallAiRecording.ts`: Calls the Recall.ai api to get a recording given the sdk upload token id. This recording contains the url for the video and the transcript
+- `src/server/lib/parseTranscript.ts`: Fetches the transcript from `recording.media_shortcuts.transcript.data.download_url` and parses the transcript into a user-readable output
 
 #### Client (Renderer Process)
 
