@@ -8,9 +8,10 @@ export const TranscriptSchema = z.object({
 export type Transcript = z.infer<typeof TranscriptSchema>;
 
 export const StateSchema = z.object({
-    permissions_granted: z.boolean(),
-    meeting: z.record(z.string(), z.any()).nullish(),
-    isRecording: z.boolean(),
+    permissionsGranted: z.boolean().nullish(),
+    isRecording: z.boolean().nullish(),
+    windowId: z.string().nullish(),
+    sdkUpload: z.record(z.string(), z.any()).nullish(),
     recording: z.record(z.string(), z.any()).nullish(),
     videoUrl: z.string().nullish(),
     transcript: TranscriptSchema.array().default([]),
@@ -20,9 +21,10 @@ export const StateSchema = z.object({
 export type State = z.infer<typeof StateSchema>;
 
 export const InitialStateValue: State = {
-    permissions_granted: false,
+    permissionsGranted: false,
     isRecording: false,
-    meeting: null,
+    windowId: null,
+    sdkUpload: null,
     recording: null,
     transcript: [],
     videoUrl: null,

@@ -1,5 +1,5 @@
 import z from "zod";
-import { Transcript } from "./state";
+import { Transcript } from "../../StateSchema";
 
 export const RecallAiTranscriptSchema = z.object({
     participant: z.object({

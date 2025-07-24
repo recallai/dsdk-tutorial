@@ -5,14 +5,14 @@ import {
   useContext,
   ReactNode,
 } from "react";
-import { State, InitialStateValue } from "../../../server/lib/state";
+import { State, InitialStateValue } from "../../../StateSchema";
 
 const SdkStateContext = createContext<{ sdkState: State }>({
   sdkState: InitialStateValue,
 });
 
 export const SdkStateProvider = ({ children }: { children: ReactNode }) => {
-  const [sdkState, setSdkState] = useState<State>(InitialStateValue);
+  const [sdkState, setSdkState] = useState(InitialStateValue);
 
   useEffect(() => {
     window.electron.ipcRenderer

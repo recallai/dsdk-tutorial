@@ -8,11 +8,11 @@ export const RecordingButton = () => {
 
   const canStartRecording = useMemo(() => {
     return (
-      !!sdkState.meeting &&
-      !!sdkState.permissions_granted &&
+      !!sdkState.windowId &&
+      !!sdkState.permissionsGranted &&
       !sdkState.isRecording
     );
-  }, [sdkState.meeting, sdkState.permissions_granted, sdkState.isRecording]);
+  }, [sdkState.windowId, sdkState.permissionsGranted, sdkState.isRecording]);
 
   const canStopRecording = useMemo(() => {
     return sdkState.isRecording;

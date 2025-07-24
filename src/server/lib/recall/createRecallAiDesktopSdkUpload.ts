@@ -17,7 +17,7 @@ export const createRecallAiDesktopSdkUpload = async () => {
             recording_config: {
                 transcript: {
                     provider: {
-                        recall_streaming: {}
+                        assembly_ai_streaming: {}
                     }
                 }
             }

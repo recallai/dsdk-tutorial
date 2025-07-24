@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
-import { getState, initializeRecallAiSdk } from './server/lib/initializeRecallAiSdk';
-import { State } from './server/lib/state';
+import { initializeRecallAiSdk } from './server/lib/initializeRecallAiSdk';
+import { getState } from './server/config/state';
+import { State } from './StateSchema';
 import z from 'zod';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
