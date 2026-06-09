@@ -54,3 +54,7 @@ Here is a guide to the key files related to the Recall.ai integration:
 
 - `src/client/components/contexts/SdkStateContext.tsx`: Contains the listener for changes to the state from the main process. The UI updates based on the contents of this state
 - `src/client/components/modules/RecordingButton.tsx`: Sends the start/stop recording command to the main process. Starts and ends the recording flow
+
+
+## Other Desktop Recording Resources
+For an update desktop recording SDK demo app, check out our [minimal desktop sdk repo](https://github.com/recallai/minimal_dsdk_sample).If you want to learn more about [recording system audio programmatically](https://www.recall.ai/blog/how-to-access-to-system-audio) we've also written a blog on covering accessing system audio in multiple ways with demos. If you're just interested in [macOS screen capture APIs](https://www.recall.ai/blog/macos-screencapture-api) there is a guide on all of the APIs to record on macOS. For those interested in Granola.ai, we've also put out a blog on open source [Granola.ai alternatives](https://www.recall.ai/blog/granola-ai-alternatives) and a tutorial on how to [build a meeting notetaker like granola](https://www.recall.ai/blog/how-to-build-a-desktop-recording-app). Finally, if you are interested in building a desktop recorder from scratch without Recall.ai, read the blog post on building a [botless recorder](https://www.recall.ai/blog/how-i-built-a-botless-meeting-recorder-from-scratch).
